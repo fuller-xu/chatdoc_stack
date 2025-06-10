@@ -27,7 +27,11 @@ export const getRuntimeBaseURL = (clientAPI: string, serverDummyAPIName: string)
 }
 
 const getBaseURLForProd = () => {
-  return getRuntimeBaseURL((globalThis as any).__KB_API_VAR__, '__KB_API__') || import.meta.env.KB_API
+  return isClient
+    ? location.origin // import.meta.env.VITE_KB_API
+    : import.meta.env.DEV
+    ? import.meta.env.VITE_KB_API
+    : getRuntimeBaseURL((globalThis as any).__KB_API_VAR__, '__KB_API__')
 }
 export const baseURL = getBaseURLForProd()
-console.log('baseURL :>> ', baseURL, import.meta.env.DEV, import.meta.env.KB_API)
+console.log('baseURL :>> ', baseURL, import.meta.env.DEV, import.meta.env.VITE_KB_API)

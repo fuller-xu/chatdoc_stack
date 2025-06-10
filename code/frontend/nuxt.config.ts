@@ -14,6 +14,15 @@ export default defineNuxtConfig({
   routeRules: {
     '/history': {
       ssr: false // 会出现 config.js 未加载的情况
+    },
+    /**
+     * 开发环境代理配置 - 走 vite-server-proxy
+     * 生产环境代理配置 - 走这里的proxy
+     */
+    '/api/v1/**': {
+      proxy: {
+        to: '__KB_API__/api/v1/**'
+      }
     }
   },
   app: {},
@@ -64,7 +73,7 @@ export default defineNuxtConfig({
   ],
 
   alias: {
-    '@intsig/canvas-mark': path.resolve(__dirname, 'libs/canvas-mark'),
+    '@intsig/canvas-mark': path.resolve(__dirname, 'libs/canvas-mark')
   },
 
   aos: {
@@ -172,7 +181,13 @@ export default defineNuxtConfig({
     },
 
     server: {
+      // 开发环境配置
       proxy: {
+        [env.VITE_KB_PREFIX_API as string]: {
+          target: env.VITE_KB_API,
+          changeOrigin: true,
+          ws: true
+        }
       }
     }
   },
